@@ -1,56 +1,51 @@
-import './Cart.css'
+import { useId } from "react";
+import { CartIcon, ClearCartIcon } from "./Icons";
+import "./Cart.css";
+import { useCart } from "../hooks/useCart";
 
-import { useId } from 'react'
-import { CartIcon, ClearCartIcon } from './Icons.jsx'
-import { useCart } from '../hooks/useCart.js'
-
-function CartItem ({ thumbnail, price, title, quantity, addToCart }) {
+function CartItem({ title, price, thumbnail, quantity, addToCart, removeFromCart }) {
   return (
-    <li>
-      <img
-        src={thumbnail}
-        alt={title}
-      />
+    <li className="product">
+      <img src={thumbnail} alt={price} />
       <div>
-        <strong>{title}</strong> - ${price}
+        <h3>{title}</h3> - <span>${price}</span>
       </div>
 
       <footer>
-        <small>
-          Qty: {quantity}
-        </small>
+        <p>Cantidad: {quantity}</p>
         <button onClick={addToCart}>+</button>
+        <button onClick={removeFromCart}>X</button>
       </footer>
     </li>
-  )
+  );
 }
 
-export function Cart () {
-  const cartCheckboxId = useId()
-  const { cart, clearCart, addToCart } = useCart()
+export function Cart() {
+  const cartId = useId();
+  const { cart, addToCart, removeFromCart, clearCart } = useCart();
 
   return (
-    <>
-      <label className='cart-button' htmlFor={cartCheckboxId}>
+    <div>
+      <label className="cart-button" htmlFor={cartId}>
         <CartIcon />
       </label>
-      <input id={cartCheckboxId} type='checkbox' hidden />
+      <input type="checkbox" name="open-cart" id={cartId} hidden />
 
-      <aside className='cart'>
+      <aside className="cart">
         <ul>
-          {cart.map(product => (
+          {cart.map((product) => (
             <CartItem
               key={product.id}
               addToCart={() => addToCart(product)}
+              removeFromCart={() => removeFromCart(product)}
               {...product}
             />
           ))}
         </ul>
-
         <button onClick={clearCart}>
           <ClearCartIcon />
         </button>
       </aside>
-    </>
-  )
+    </div>
+  );
 }

@@ -1,20 +1,21 @@
-import { useContext } from 'react'
-import { FiltersContext } from '../context/filters.jsx'
+import { useContext } from "react";
+import { FiltersContext } from "../context/filters";
 
-export function useFilters () {
-  const { filters, setFilters } = useContext(FiltersContext)
+export function useFilters() {
+  const context = useContext(FiltersContext);
+  const { filters } = context;
 
-  const filterProducts = (products) => {
-    return products.filter(product => {
-      return (
-        product.price >= filters.minPrice &&
-        (
-          filters.category === 'all' ||
-          product.category === filters.category
-        )
-      )
-    })
+  if (context === undefined) {
+    throw new Error("useFilter must be used inside a FiltersProvider");
   }
 
-  return { filters, filterProducts, setFilters }
+  const filterProducts = (products) => {
+    return products.filter(
+      (product) =>
+        (product.category === filters.category || filters.category === "all") &&
+        product.price >= filters.minPrice
+    );
+  };
+
+  return { ...context, filterProducts };
 }

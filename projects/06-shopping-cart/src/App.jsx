@@ -1,25 +1,27 @@
-import { products as initialProducts } from './mocks/products.json'
-import { Products } from './components/Products.jsx'
-import { Header } from './components/Header.jsx'
-import { Footer } from './components/Footer.jsx'
-import { IS_DEVELOPMENT } from './config.js'
-import { useFilters } from './hooks/useFilters.js'
-import { Cart } from './components/Cart.jsx'
-import { CartProvider } from './context/cart.jsx'
+import { Products } from "./components/Products";
+import { Header } from "./components/Header";
+import { useFilters } from "./hooks/useFilters";
+import { Cart } from "./components/Cart";
+import { CartProvider } from "./context/cart";
+import { useProducts } from "./hooks/useProducts";
 
-function App () {
-  const { filterProducts } = useFilters()
+function App() {
+  const { filterProducts } = useFilters();
+  const { products } = useProducts();
 
-  const filteredProducts = filterProducts(initialProducts)
+  const filteredProducts = filterProducts(products);
 
   return (
-    <CartProvider>
-      <Header />
-      <Cart />
-      <Products products={filteredProducts} />
-      {IS_DEVELOPMENT && <Footer />}
-    </CartProvider>
-  )
+    <>
+      <CartProvider>
+        <Header />
+        <Cart />
+        <main>
+          <Products products={filteredProducts} />
+        </main>
+      </CartProvider>
+    </>
+  );
 }
 
-export default App
+export default App;

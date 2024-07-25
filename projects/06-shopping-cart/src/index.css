@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -15,7 +19,7 @@
 }
 
 #root {
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
@@ -28,6 +32,10 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+}
+
+main {
+  max-width: 800px;
 }
 
 button {

@@ -1,56 +1,47 @@
-import { useId } from 'react'
-import { useFilters } from '../hooks/useFilters.js'
-import './Filters.css'
+import { useId } from "react";
+import "./Filters.css";
+import { useFilters } from "../hooks/useFilters";
 
-export function Filters () {
-  const { filters, setFilters } = useFilters()
+export function Filters() {
+  const minPriceId = useId();
+  const categoryId = useId();
 
-  const minPriceFilterId = useId()
-  const categoryFilterId = useId()
+  const { filters, changeFilter } = useFilters();
 
-  const handleChangeMinPrice = (event) => {
-    setFilters(prevState => ({
-      ...prevState,
-      minPrice: event.target.value
-    }))
-  }
+  const { minPrice } = filters;
 
-  const handleChangeCategory = (event) => {
-    // ⬇️ ESTO HUELE MAL
-    // estamos pasando la función de actualizar estado
-    // nativa de React a un componente hijo
-    setFilters(prevState => ({
-      ...prevState,
-      category: event.target.value
-    }))
-  }
+  const handleChangeMinPrice = (e) => {
+    changeFilter("minPrice", e.target.value);
+  };
+
+  const handleChangeCategory = (e) => {
+    changeFilter("category", e.target.value);
+  };
 
   return (
-    <section className='filters'>
-
+    <div className="filters">
       <div>
-        <label htmlFor={minPriceFilterId}>Precio a partir de:</label>
+        <label htmlFor={minPriceId}>Precio mínimo</label>
         <input
-          type='range'
-          id={minPriceFilterId}
-          min='0'
-          max='1000'
+          type="range"
+          name="min-price"
+          id={minPriceId}
+          min={0}
+          max={1000}
+          step={10}
           onChange={handleChangeMinPrice}
-          value={filters.minPrice}
+          value={minPrice}
         />
-        <span>${filters.minPrice}</span>
+        <span>{minPrice}</span>
       </div>
-
       <div>
-        <label htmlFor={categoryFilterId}>Categoría</label>
-        <select id={categoryFilterId} onChange={handleChangeCategory}>
-          <option value='all'>Todas</option>
-          <option value='laptops'>Portátiles</option>
-          <option value='smartphones'>Celulares</option>
+        <label htmlFor={categoryId}>Categoría</label>
+        <select name="category" id={categoryId} onChange={handleChangeCategory}>
+          <option value="all">Todo</option>
+          <option value="laptops">Notebooks</option>
+          <option value="smartphones">Celulares</option>
         </select>
       </div>
-
-    </section>
-
-  )
+    </div>
+  );
 }

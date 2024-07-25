@@ -1,40 +1,52 @@
-import { useReducer, createContext } from 'react'
-import { cartReducer, cartInitialState } from '../reducers/cart.js'
+import { createContext, useEffect, useReducer } from "react";
+import { cartReducer } from "../reducers/cartReducer";
 
-export const CartContext = createContext()
+export const CartContext = createContext();
 
-function useCartReducer () {
-  const [state, dispatch] = useReducer(cartReducer, cartInitialState)
+function useCartReducer() {
+  const cartInitialState = JSON.parse(localStorage.getItem("cart")) || [];
+  const [cart, dispatch] = useReducer(cartReducer, cartInitialState);
 
-  const addToCart = product => dispatch({
-    type: 'ADD_TO_CART',
-    payload: product
-  })
+  useEffect(() => {
+    saveToLocalStorage();
+  }, [cart]);
 
-  const removeFromCart = product => dispatch({
-    type: 'REMOVE_FROM_CART',
-    payload: product
-  })
+  const saveToLocalStorage = () => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  };
 
-  const clearCart = () => dispatch({ type: 'CLEAR_CART' })
+  const addToCart = (product) => {
+    dispatch({
+      type: "ADD_TO_CART",
+      product: product,
+    });
+    saveToLocalStorage();
+  };
 
-  return { state, addToCart, removeFromCart, clearCart }
+  const removeFromCart = (product) => {
+    dispatch({
+      type: "REMOVE_FROM_CART",
+      product: product,
+    });
+    saveToLocalStorage();
+  };
+
+  const clearCart = () => {
+    dispatch({
+      type: "CLEAR_CART",
+    });
+    saveToLocalStorage();
+  };
+
+  return { cart, addToCart, removeFromCart, clearCart };
 }
 
-// la dependencia de usar React Context
-// es MÍNIMA
-export function CartProvider ({ children }) {
-  const { state, addToCart, removeFromCart, clearCart } = useCartReducer()
+export function CartProvider({ children }) {
+  const { cart, addToCart, clearCart, removeFromCart } = useCartReducer();
 
   return (
-    <CartContext.Provider value={{
-      cart: state,
-      addToCart,
-      removeFromCart,
-      clearCart
-    }}
-    >
+    <CartContext.Provider value={{ cart, addToCart, clearCart, removeFromCart }}>
       {children}
     </CartContext.Provider>
-  )
+  );
 }
